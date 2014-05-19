@@ -69,6 +69,8 @@ define([
       },
 
       postRender : function() {
+
+        
         Transitionable.registerMethod('spring', SpringTransition);
 
         var mainContext = Engine.createContext(this.$el.find('.famousgraph-container')[0]);
