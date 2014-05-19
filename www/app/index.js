@@ -19,6 +19,7 @@ require.config({
     "bootstrap": "../bower/bootstrap/dist/js/bootstrap",
     "moment" : "../bower/moment/moment",
     "async" : "../bower/async/lib/async",
+    "famous": "../bower/famous",
 
     // App specific
     "collections/global": "collections/global",

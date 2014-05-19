@@ -11,7 +11,16 @@ define([
   "underscore",
   "backbone",
   "handlebars",
-  "templates"
+  "templates",
+
+  // famous
+  "famous/core/Engine",
+  "famous/core/Modifier",
+  "famous/core/Transform",
+  "famous/core/Surface",
+  "famous/transitions/Transitionable",
+  "famous/views/Deck",
+  "famous/transitions/SpringTransition"
 
   ], function(
 
@@ -26,7 +35,16 @@ define([
     _,
     Backbone,
     Handlebars,
-    templates
+    templates,
+
+    // famous
+    Engine,
+    Modifier,
+    Transform,
+    Surface,
+    Transitionable,
+    Deck,
+    SpringTransition
 
   ) {
 
@@ -51,6 +69,44 @@ define([
       },
 
       postRender : function() {
+        Transitionable.registerMethod('spring', SpringTransition);
+
+        var mainContext = Engine.createContext();
+
+        var surfaces = [];
+        var myLayout = new Deck({
+            itemSpacing: 10,
+            transition: {
+                method: 'spring',
+                period: 300,
+                dampingRatio: 0.5
+            },
+            stackRotation: 0.02
+        });
+
+        myLayout.sequenceFrom(surfaces);
+
+        for(var i = 0; i < 5; i++) {
+            var temp = new Surface({
+                size: [100, 200],
+                classes: ['test'],
+                properties: {
+                    backgroundColor: 'hsla(' + ((i*5 + i)*15 % 360) + ', 60%, 50%, 0.8)'
+                },
+                content: i
+            });
+
+            temp.on('click', function() {
+                myLayout.toggle();
+            });
+            surfaces.push(temp);
+        }
+
+        var containerModifier = new Modifier({
+            origin: [0.5, 0.5]
+        });
+
+        mainContext.add(containerModifier).add(myLayout);
 
       },
 
