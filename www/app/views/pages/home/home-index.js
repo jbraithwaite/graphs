@@ -71,7 +71,7 @@ define([
       postRender : function() {
         Transitionable.registerMethod('spring', SpringTransition);
 
-        var mainContext = Engine.createContext();
+        var mainContext = Engine.createContext(this.$el.find('.famousgraph-container')[0]);
 
         var surfaces = [];
         var myLayout = new Deck({
