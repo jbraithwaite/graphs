@@ -110,7 +110,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
 
   // On compile
-  grunt.registerTask('compile', ['requirejs', 'less', 'handlebars']);
+  grunt.registerTask('compile', ['less', 'handlebars', 'requirejs']);
 
   // Run the server and watch for file changes
   grunt.registerTask('server', ['watch']);
