@@ -7,24 +7,6 @@ define(["jquery", "backbone"],
 
     Backbone.sync = function(method, model, options){
 
-      options.beforeSend = function(xhr){
-        xhr.setRequestHeader('X-CSRF-Token', App.csrfToken);
-
-        // The csrf cookie expired, abandon sync and refresh page to get a new one.
-        if (document.cookie.indexOf('csrf_cookie') == -1){
-
-          if (App.tracking){
-            mixpanel.track(
-              "Error",
-              { 'mpProperties.Type': "Expired CSRF cookie" },
-              function(){
-                location.reload();
-              }
-            );
-          }
-        }
-      };
-
       options.complete = function(xhr){
 
         // Track the error with Mixpanel
