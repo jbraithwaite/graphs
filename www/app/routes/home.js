@@ -83,10 +83,13 @@ define([
           collection.comparator = 'blog';
           collection.sort();
 
-          graphData.blogs = collection.map(function(model){
+
+
+          graphData.blogs = collections.blogs.map(function(blog){
+
             return {
-              index: model.get('blog'),
-              value: graphData.blogs[model.get('blog')] + 1 || 1
+              index: blog.id,
+              value: collection.where({blog:blog.id}).length
             };
 
           });
@@ -98,11 +101,11 @@ define([
 
           //   graphData.blogs.push({
           //     index: model.get('blog'),
-          //     value: 
+          //     value:
           //   });
           // });
 
-          console.log(graphData);
+          console.log(graphData.blogs);
         // Now add the event on add to get future models
         votes.on('add', function(model){
 
@@ -237,14 +240,14 @@ define([
               barColor: "#ffff00",
               // level: self.options.level + 1,
               data: [
-                {value: 10, index: 0}, 
-                {value: 10, index: 0}, 
-                {value: 10, index: 0}, 
-                {value: 10, index: 0}, 
-                {value: 10, index: 0}, 
-                {value: 10, index: 0}, 
-                {value: 10, index: 0}, 
-                {value: 10, index: 0}, 
+                {value: 10, index: 0},
+                {value: 10, index: 0},
+                {value: 10, index: 0},
+                {value: 10, index: 0},
+                {value: 10, index: 0},
+                {value: 10, index: 0},
+                {value: 10, index: 0},
+                {value: 10, index: 0},
                 {value: 200, index: 1}
               ]
           });
