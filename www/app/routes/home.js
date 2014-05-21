@@ -22,6 +22,7 @@ define([
   "famous/transitions/Transitionable",
   "famous/surfaces/ContainerSurface",
   "famous/math/Random",
+  "famous/core/EventHandler",
   "views/famousgraph/Bargraph"
 
   ], function(
@@ -48,6 +49,7 @@ define([
     Transitionable,
     ContainerSurface,
     Random,
+    EventHandler,
     Bargraph
 
   ){
@@ -69,7 +71,8 @@ define([
       // views.contents.$el.html(views.currentView.render().$el);
 
       var mainContext = Engine.createContext();
-      mainContext.setPerspective(1000);
+      var eventHandler = new EventHandler();
+      // mainContext.setPerspective(1000);
 
       var bargraph;
       var data = [];
@@ -117,7 +120,7 @@ define([
       mainContext.add(new Modifier({origin: [0, 0]})).add(back);
 
       var containerMod = new Modifier({
-        origin: [0.5, 1]
+        origin: [0.5, 0.5]
       });
       var transitionable = new Transitionable(1);
 
@@ -134,6 +137,7 @@ define([
           gutterWidth: 5,
           axisWidth: 0,
           axisPadding: 0,
+          eventHandler: eventHandler,
           size: size,
           data: data
       });
@@ -142,6 +146,13 @@ define([
       window.bargraph = bargraph;
       window.containerMod = containerMod;
       window.transitionable = transitionable;
+
+      // zoom bargraph
+      eventHandler.on("zoomIn", function (origin) {
+        if (!origin) origin = [0.5, 1];
+        containerMod.setOrigin(origin);
+        transitionable.set(50, {curve: "linear", duration: 2000});
+      });
 
       views.trigger('loaded');
     };

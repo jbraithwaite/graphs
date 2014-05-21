@@ -4,6 +4,7 @@ define(function(require, exports, module) {
     var Transitionable  = require('famous/transitions/Transitionable');
     var OptionsManager  = require('famous/core/OptionsManager');
     var Easing          = require('famous/transitions/Easing');
+    // var EventHandler    = require('famous/core/EventHandler');
 
     function Bargraph (options) {
         this._dataLevels = [];
@@ -130,31 +131,32 @@ define(function(require, exports, module) {
 
             // add bar events
             this._bars[i].on("click", function () {
-                // debugger;
-                var index = this.getProperties().index;
-                var subdata = self.options.data[index].subdata;
-                console.log('clicked on bar', this.getProperties().index, 'subdata:', self.options.data[index].subdata, 'level:', self.options.level);
-                if (self.options.data[index].subdata && (self.options.data[index].subdata.length > 0)) {
-                    this.setProperties({
-                        zIndex: 2,
-                        borderRadius: '0px',
-                        clicked: true
-                    });
+                debugger;
+                self.options.eventHandler.emit('zoomIn', [0.5, 1]);
+                // var index = this.getProperties().index;
+                // var subdata = self.options.data[index].subdata;
+                // console.log('clicked on bar', this.getProperties().index, 'subdata:', self.options.data[index].subdata, 'level:', self.options.level);
+                // if (self.options.data[index].subdata && (self.options.data[index].subdata.length > 0)) {
+                //     this.setProperties({
+                //         zIndex: 2,
+                //         borderRadius: '0px',
+                //         clicked: true
+                //     });
 
-                    var xScale = self.options.size[0] / this.size[0];
-                    var yScale = self.options.size[1] / this.size[1];
+                //     var xScale = self.options.size[0] / this.size[0];
+                //     var yScale = self.options.size[1] / this.size[1];
 
-                    console.log(self.options.size[1], this.size[1], yScale);
-                    self._scaleBar[0].set(xScale, self.options.subTransition);
-                    self._scaleBar[1].set(yScale, self.options.subTransition, function() {
-                        self.setOptions({
-                            backgroundColor:  this.getProperties().backgroundColor,
-                            level: self.options.level + 1,
-                            data: subdata
-                        });
-                        self.start();
-                    }.bind(this));
-                }
+                //     console.log(self.options.size[1], this.size[1], yScale);
+                //     self._scaleBar[0].set(xScale, self.options.subTransition);
+                //     self._scaleBar[1].set(yScale, self.options.subTransition, function() {
+                //         self.setOptions({
+                //             backgroundColor:  this.getProperties().backgroundColor,
+                //             level: self.options.level + 1,
+                //             data: subdata
+                //         });
+                //         self.start();
+                //     }.bind(this));
+                // }
             });
         }
     };
