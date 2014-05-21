@@ -14,9 +14,6 @@ require.config({
     "handlebars": "../bower/handlebars/handlebars",
     "underscore": "../bower/underscore/underscore",
 
-    // Sails and Socket
-    "sails"            : "../bower/sails/sails.io",
-    "socket"           : "../bower/socket.io/socket.io",
 
     // Other core
     "nprogress": "../bower/nprogress/nprogress",
@@ -80,8 +77,6 @@ require(
     "backbone",
     "underscore",
     "bootstrap",
-    "socket",
-    "sails",
 
     // Mixins - Extend certain functionality. Kinda important.
     "mixins/handlebar-helpers",
@@ -95,8 +90,6 @@ require(
     Backbone,
     _,
     bootstrap,
-    io,
-    sails,
 
     m1,
     m2,
@@ -104,43 +97,7 @@ require(
 
     Router
   ) {
-
-    // as soon as this file is loaded, connect automatically,
-    App.socket = io.connect();
-
-    // EVENT: On connect
-    App.socket.on('connect', function() {
-      console.debug('Socket connected');
-    });
-
-    // EVENT: On first connect
-    App.socket.once('connect', function() {
       // Start the application
       new Router();
-    });
-
-    // EVENT: On Message
-    App.socket.on('message', function(message) {
-
-      // Display the message (debugging);
-      console.debug('message received :: ', message);
-    });
-
-    // EVENT: On Disconnect
-    App.socket.on('disconnect', function(message) {
-
-      // Display disconnect
-      console.warn('Disconnected!');
-
-      delete App.socket;
-
-      // Try to reconnect after 5 seconds
-      setTimeout(function(){
-
-          console.debug('Reconnecting');
-          App.socket = io.connect();
-      }, 1000);
-
-    });
   }
 );
