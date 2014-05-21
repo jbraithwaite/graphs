@@ -18,6 +18,8 @@ define([
   "famous/core/Engine",
   "famous/core/Modifier",
   "famous/core/Surface",
+  "famous/core/Transform",
+  "famous/transitions/Transitionable",
   "famous/surfaces/ContainerSurface",
   "famous/math/Random",
   "views/famousgraph/Bargraph"
@@ -42,6 +44,8 @@ define([
     Engine,
     Modifier,
     Surface,
+    Transform,
+    Transitionable,
     ContainerSurface,
     Random,
     Bargraph
@@ -111,7 +115,17 @@ define([
           bargraph.backOneLevel();
       });
       mainContext.add(new Modifier({origin: [0, 0]})).add(back);
-      mainContext.add(new Modifier({origin: [0.5, 0.5]})).add(container);
+
+      var containerMod = new Modifier({
+        origin: [0.5, 0.5]
+      });
+      var transitionable = new Transitionable(1);
+
+      containerMod.transformFrom(function() {
+        return Transform.scale(transitionable.get(), transitionable.get(), 1);
+      });
+
+      mainContext.add(containerMod).add(container);
 
       bargraph = new Bargraph({
           direction: Bargraph.STYLE_COL,
@@ -126,6 +140,8 @@ define([
 
       container.add(bargraph.start());
       window.bargraph = bargraph;
+      window.containerMod = containerMod;
+      window.transitionable = transitionable;
 
       views.trigger('loaded');
     };

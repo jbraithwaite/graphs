@@ -11,7 +11,7 @@ define(function(require, exports, module) {
         this._optionsManager = new OptionsManager(this.options);        
         if (options) this.setOptions(options);
 
-        this._optionsManager.on('change', function(event) {
+        this._optionsManager.on('change', function (event) {
             console.log('setting option', event);
             switch(event.id) {
                 case "backgroundColor":
@@ -28,7 +28,7 @@ define(function(require, exports, module) {
                         });
                         this.initialize();
                     }
-                    break;
+                    break;                    
             }
         }.bind(this));
 
@@ -56,13 +56,14 @@ define(function(require, exports, module) {
         }
         this._bars = [];
         this._barHeights = [];
+        this._originalBarValues = [];
         this._scaleBar = [new Transitionable(1), new Transitionable(1), 1];
         this._barWidth = 0;
+        this._barHeightRatio;
         this._dataLevels[this.options.level] = this.options.data;
 
         var numBars = this.options.data.length;
         var maxBarHeight = 0;
-        var barHeightRatio;
 
 
         // draw background
@@ -94,10 +95,10 @@ define(function(require, exports, module) {
 
         // calculate bar height ratio
         if (this.options.direction === Bargraph.STYLE_COL) {
-            barHeightRatio = (this.options.size[1] - this.options.axisWidth - (this.options.axisPadding * 2)) / maxBarHeight;
+            this._barHeightRatio = (this.options.size[1] - this.options.axisWidth - (this.options.axisPadding * 2)) / maxBarHeight;
         }
         else {
-            barHeightRatio = this.options.size[0] / maxBarHeight;            
+            this._barHeightRatio = this.options.size[0] / maxBarHeight;            
         }
 
        // draw bars
@@ -106,22 +107,28 @@ define(function(require, exports, module) {
         for (var i=0; i<numBars; i++) {
             this._barHeights[i] = new Transitionable(1 / this.options.data[i].value);
             if (this.options.direction === Bargraph.STYLE_COL) {
-                barSize = [this._barWidth, this.options.data[i].value * barHeightRatio]; 
+                barSize = [this._barWidth, this.options.data[i].value * this._barHeightRatio]; 
             }
             else {
-                barSize = [this.options.data[i].value * barHeightRatio, this._barWidth];
+                barSize = [this.options.data[i].value * this._barHeightRatio, this._barWidth];
             }
             this._bars.push(new Surface({
                 size: barSize,
                 properties: {
                     index: i,
                     zIndex: 1,
-                    borderRadius: '5px',
+                    // borderRadius: '5px',
                     clicked: false,
                     backgroundColor: this.options.barColor
                     // backgroundColor: "hsl(" + (i * 360 / 10) + ", 100%, 50%)"
                 }
             }));
+
+            // store original bar values for scaling purposes
+            this._originalBarValues.push(barSize[1]);
+
+
+            // add bar events
             this._bars[i].on("click", function () {
                 // debugger;
                 var index = this.getProperties().index;
@@ -146,7 +153,6 @@ define(function(require, exports, module) {
                             data: subdata
                         });
                         self.start();
-                        // document.body.style.backgroundColor = this.getProperties().backgroundColor;
                     }.bind(this));
                 }
             });
@@ -166,6 +172,37 @@ define(function(require, exports, module) {
             this.animateBar(i);
         }
         return this;
+    };
+
+    Bargraph.prototype.addItem = function addItem (item) {
+        if (item.value === undefined) return;
+        var index = this.options.data.length;
+        var barSize = [this._barWidth, item.value * this._barHeightRatio];         
+        this.options.data[index] = item;
+        this._bars.push(new Surface({
+            size: barSize,
+            properties: {
+                index: index,
+                zIndex: 1,
+                borderRadius: '5px',
+                clicked: false,
+                backgroundColor: this.options.barColor
+                // backgroundColor: "hsl(" + (index * 360 / 10) + ", 100%, 50%)"
+            }
+        }));
+        this._barHeights.push(new Transitionable(1 / item.value));
+        this._originalBarValues.push(barSize[1]);
+        this.animateBar(index);
+    };
+
+    Bargraph.prototype.setItemValue = function setItemValue (index, value) {
+        if (value === undefined) return;
+        if ((index < 0) || (index > this.options.data.length -1)) return;
+
+        var originalValue = this._originalBarValues[index];
+        var newValue = this.options.data[index].value = value * this._barHeightRatio;
+        var scaleBy = newValue / originalValue;
+        this._barHeights[index].set(scaleBy, this.options.barTransition);
     };
 
     Bargraph.prototype.backOneLevel = function backOneLevel() {
@@ -190,6 +227,8 @@ define(function(require, exports, module) {
 
     Bargraph.prototype.render = function render() {
         var result = [];
+
+        // render hiding pane
         if (this.addHidingPane) {
             result.push({
                 origin: [0, 0],
@@ -202,11 +241,13 @@ define(function(require, exports, module) {
                 }).render()
             });
         }
-        // push background
+        // render background
         result.push({
             origin: (this.options.direction === Bargraph.STYLE_COL) ? [0, 1] : [0, 0],
             target: this._background.render()
         });
+
+        // render each bar 
         var offset = this.options.axisWidth + this.options.axisPadding;
         var transform;
         for (var i=0; i<this._bars.length; i++) {
@@ -225,6 +266,7 @@ define(function(require, exports, module) {
             if (this._bars[i].properties.clicked) {
                 result[result.length - 1].origin = [(offset+this._barWidth)/this.options.size[0], 1];
                 result[result.length - 1].transform = Transform.scale(this._scaleBar[0].get(), this._scaleBar[1].get(), 1);
+                // result[result.length - 1].transform = Transform.scale(1, 1, 100);
             }
 
             offset = offset + this._barWidth + this.options.gutterWidth;
