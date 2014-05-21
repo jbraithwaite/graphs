@@ -131,8 +131,7 @@ define(function(require, exports, module) {
 
             // add bar events
             this._bars[i].on("click", function () {
-                debugger;
-                self.options.eventHandler.emit('zoomIn', [0.5, 1]);
+                self.options.eventHandler.emit('zoomIn', self._bars[this.getProperties().index].offset);
                 // var index = this.getProperties().index;
                 // var subdata = self.options.data[index].subdata;
                 // console.log('clicked on bar', this.getProperties().index, 'subdata:', self.options.data[index].subdata, 'level:', self.options.level);
@@ -253,6 +252,7 @@ define(function(require, exports, module) {
         var offset = this.options.axisWidth + this.options.axisPadding;
         var transform;
         for (var i=0; i<this._bars.length; i++) {
+            this._bars[i].offset = offset;
             if (this.options.direction === Bargraph.STYLE_COL) {
                 transform = Transform.thenScale(Transform.translate(offset, -(this.options.axisWidth + this.options.axisPadding)), [1, this._barHeights[i].get(), 1]);
             }

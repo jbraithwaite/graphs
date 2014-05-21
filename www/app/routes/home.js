@@ -87,7 +87,7 @@ define([
 
       var mainContext = Engine.createContext();
       var eventHandler = new EventHandler();
-      // mainContext.setPerspective(1000);
+      mainContext.setPerspective(1000);
 
       var bargraph;
       var data = [];
@@ -134,20 +134,27 @@ define([
       });
       mainContext.add(new Modifier({origin: [0, 0]})).add(back);
 
+      var cameraMod = new Modifier({
+        align : [0.5, 0.5],
+        origin: [0.5, 0.5]
+      });
       var containerMod = new Modifier({
         origin: [0.5, 0.5]
       });
-      var transitionable = new Transitionable(1);
+      var transitionableX = new Transitionable(0);
+      var transitionableY = new Transitionable(0);
+      var transitionableZ = new Transitionable(0);
 
-      containerMod.transformFrom(function() {
-        return Transform.scale(transitionable.get(), transitionable.get(), 1);
+      cameraMod.transformFrom(function() {
+        return Transform.translate(transitionableX.get(), transitionableY.get(), transitionableZ.get());
       });
 
-      mainContext.add(containerMod).add(container);
+      // mainContext.add(containerMod).add(container);
+      mainContext.add(cameraMod).add(containerMod).add(container);
 
       bargraph = new Bargraph({
           direction: Bargraph.STYLE_COL,
-          backgroundColor: '#f2f2f0',
+          backgroundColor: '#fff',
           barColor: '#006699',
           gutterWidth: 5,
           axisWidth: 0,
@@ -160,13 +167,13 @@ define([
       container.add(bargraph.start());
       window.bargraph = bargraph;
       window.containerMod = containerMod;
-      window.transitionable = transitionable;
+      // window.transitionable = transitionable;
 
       // zoom bargraph
-      eventHandler.on("zoomIn", function (origin) {
-        if (!origin) origin = [0.5, 1];
-        containerMod.setOrigin(origin);
-        transitionable.set(50, {curve: "linear", duration: 2000});
+      eventHandler.on("zoomIn", function (offset) {
+        transitionableX.set(-offset+350, {curve: "linear", duration: 500});
+        transitionableY.set(-240, {curve: "linear", duration: 500});
+        transitionableZ.set(999, {curve: "linear", duration: 500});
       });
 
       views.trigger('loaded');
