@@ -8,7 +8,8 @@ define([
   // Libraries
   "jquery",
   "underscore",
-  "backbone"
+  "backbone",
+  "backfire"
 
   ], function(
 
@@ -20,7 +21,8 @@ define([
     // Libraries
     $,
     _,
-    Backbone
+    Backbone,
+    backfire
 
   ) {
 

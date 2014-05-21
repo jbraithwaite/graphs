@@ -16,6 +16,7 @@ define([
 
   // Routes
   'routes/home',
+  'routes/vote',
   'routes/404',
 
   // Global Collections
@@ -31,6 +32,7 @@ define([
 
     // Routes
     Home,
+    Vote,
     FourOhFour,
 
     // Global Collections
@@ -62,6 +64,7 @@ define([
 
       // Home
       '': 'home',
+      'vote': 'vote',
 
       '*path': 'show404'
     },
@@ -93,6 +96,12 @@ define([
     // --------------------------------------------------------------
     home: function (){
       new Home();
+    },
+
+    // VOTE
+    // --------------------------------------------------------------
+    vote: function (){
+      new Vote();
     },
 
     // SHOW PAGE NOT FOUND (404)

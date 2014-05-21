@@ -1,0 +1,54 @@
+<div class="container">
+
+  <form class="form-signin form-horizontal" role="form">
+    <h2 class="form-signin-heading">Vote now!</h2>
+
+    <div class="input-group">
+      <span class="input-group-addon">@</span>
+      <input type="text" id="form-handle" class="form-control" placeholder="Twitter Username">
+    </div>
+
+    <div class="input-group">
+      <select class="form-control" id="form-blog">
+          <option value="" selected>Favorite Tech Site</option>}
+        {{#each blogs}}
+          <option value="{{id}}">{{name}}</option>
+        {{/each}}
+      </select>
+      <div id="form-blog-help" class="hide">Select a blog</div>
+    </div>
+
+    <div class="input-group">
+      <select id="form-age">
+        <option value="" selected>Age</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+        <option value="24">24</option>
+        <option value="25">25</option>
+        <option value="26">26</option>
+        <option value="27">27</option>
+        <option value="28">28</option>
+        <option value="29">29</option>
+        <option value="30">30+</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <select class="form-control" id="form-gender">
+        <option value="" selected>Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit" id="submit">Vote</button>
+  </form>
+
+</div>

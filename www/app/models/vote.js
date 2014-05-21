@@ -7,8 +7,8 @@ define([
   // Libraries
   "jquery",
   "underscore",
-  "backbone",
-  "backfire"
+  "backbone"
+  // "backfire"
 
   ], function(
 
@@ -20,21 +20,20 @@ define([
     // Libraries
     $,
     _,
-    Backbone,
-    backfire
+    Backbone
+    // backfire
 
   ) {
 
-    return Backbone.Firebase.Model.extend({
+    return Backbone.Model.extend({
 
       defaults : {
         vote : null,
         age : null,
         gender : null,
         handle : null
-      },
+      }
 
-      firebase: App.credentials.firebase.url + '/votes/' + this.id,
     });
   }
 
