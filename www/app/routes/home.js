@@ -66,6 +66,11 @@ define([
       // Remove previous view
       views.currentView.remove();
 
+
+      // famous events
+      var eventHandler = new EventHandler();
+
+
       // A Firebase collection. It's automatically kept in sync. No need to manually do fetches or sync.
       var votes = new Votes();
       var graphData = {
@@ -91,6 +96,8 @@ define([
 
           });
 
+          eventHandler.emit("initGraph", graphData.blogs);
+
           // collection.each(function(model){
 
 
@@ -115,7 +122,6 @@ define([
 
 
       var mainContext = Engine.createContext();
-      var eventHandler = new EventHandler();
       mainContext.setPerspective(1000);
 
       var bargraph;
@@ -191,26 +197,29 @@ define([
 
       mainContext.add(cameraMod).add(containerMod).add(container);
 
-      bargraph = new Bargraph({
-          direction: Bargraph.STYLE_COL,
-          backgroundColor: '#fff',
-          barColor: '#006699',
-          gutterWidth: 5,
-          axisWidth: 0,
-          axisPadding: 0,
-          eventHandler: eventHandler,
-          size: size,
-          data: graphData.blogs
-      });
-
-      container.add(bargraph.start());
-      window.bargraph = bargraph;
       // window.containerMod = containerMod;
       // window.modal = modal;
       // window.transitionableZ = transitionableZ;
       // window.transitionableX = transitionableX;
       // window.transitionableY = transitionableY;
       // window.transitionable = transitionable;
+
+      eventHandler.on("initGraph", function (data) {
+        bargraph = new Bargraph({
+            direction: Bargraph.STYLE_COL,
+            backgroundColor: '#fff',
+            barColor: '#006699',
+            gutterWidth: 5,
+            axisWidth: 0,
+            axisPadding: 0,
+            eventHandler: eventHandler,
+            size: size,
+            data: graphData.blogs
+        });
+
+        container.add(bargraph.start());
+        window.bargraph = bargraph;
+      });
 
       // zoom bargraph
       eventHandler.on("zoomIn", function (offset, index) {
