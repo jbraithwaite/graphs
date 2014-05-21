@@ -57,6 +57,7 @@ define(function(require, exports, module) {
         }
         this._bars = [];
         this._barHeights = [];
+        this._maxBarHeight = 0;
         this._originalBarValues = [];
         this._scaleBar = [new Transitionable(1), new Transitionable(1), 1];
         this._barWidth = 0;
@@ -64,8 +65,6 @@ define(function(require, exports, module) {
         this._dataLevels[this.options.level] = this.options.data;
 
         var numBars = this.options.data.length;
-        var maxBarHeight = 0;
-
 
         // draw background
         this._background = new Surface({
@@ -89,17 +88,17 @@ define(function(require, exports, module) {
 
         // find max bar height
         for (var i=0; i<numBars; i++) {
-            if (this.options.data[i].value > maxBarHeight) {
-                maxBarHeight = this.options.data[i].value;
+            if (this.options.data[i].value > this._maxBarHeight) {
+                this._maxBarHeight = this.options.data[i].value;
             }
         }
 
         // calculate bar height ratio
         if (this.options.direction === Bargraph.STYLE_COL) {
-            this._barHeightRatio = (this.options.size[1] - this.options.axisWidth - (this.options.axisPadding * 2)) / maxBarHeight;
+            this._barHeightRatio = (this.options.size[1] - this.options.axisWidth - (this.options.axisPadding * 2)) / this._maxBarHeight;
         }
         else {
-            this._barHeightRatio = this.options.size[0] / maxBarHeight;            
+            this._barHeightRatio = this.options.size[0] / this._maxBarHeight;            
         }
 
        // draw bars
@@ -131,7 +130,7 @@ define(function(require, exports, module) {
 
             // add bar events
             this._bars[i].on("click", function () {
-                self.options.eventHandler.emit('zoomIn', self._bars[this.getProperties().index].offset);
+                self.options.eventHandler.emit('zoomIn', self._bars[this.getProperties().index].offset, this.getProperties().index);
                 // var index = this.getProperties().index;
                 // var subdata = self.options.data[index].subdata;
                 // console.log('clicked on bar', this.getProperties().index, 'subdata:', self.options.data[index].subdata, 'level:', self.options.level);
@@ -157,6 +156,16 @@ define(function(require, exports, module) {
                 //     }.bind(this));
                 // }
             });
+        }
+    };
+
+    Bargraph.prototype.adjustBars = function adjustBars() {
+        for (var index=0; index<this.options.data.length; index++) {
+            var originalValue = this._originalBarValues[index];
+            this._barHeightRatio = (this.options.size[1] - this.options.axisWidth - (this.options.axisPadding * 2)) / this._maxBarHeight;
+            var newValue = this.options.data[index].value * this._barHeightRatio;
+            var scaleBy = newValue / originalValue;
+            this._barHeights[index].set(scaleBy, this.options.barTransition);            
         }
     };
 
@@ -201,9 +210,13 @@ define(function(require, exports, module) {
         if ((index < 0) || (index > this.options.data.length -1)) return;
 
         var originalValue = this._originalBarValues[index];
-        var newValue = this.options.data[index].value = value * this._barHeightRatio;
-        var scaleBy = newValue / originalValue;
-        this._barHeights[index].set(scaleBy, this.options.barTransition);
+        this._barHeightRatio = (this.options.size[1] - this.options.axisWidth - (this.options.axisPadding * 2)) / this._maxBarHeight;
+        var newValue = this.options.data[index].value = value; 
+
+        if (value > this._maxBarHeight) {
+            this._maxBarHeight = value;
+        }
+        this.adjustBars();
     };
 
     Bargraph.prototype.backOneLevel = function backOneLevel() {
