@@ -117,7 +117,7 @@ define([
       mainContext.add(new Modifier({origin: [0, 0]})).add(back);
 
       var containerMod = new Modifier({
-        origin: [0.5, 0.5]
+        origin: [0.5, 1]
       });
       var transitionable = new Transitionable(1);
 
