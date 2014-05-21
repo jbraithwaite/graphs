@@ -40,17 +40,6 @@
 
 <body>
 
-
-  <!-- CONTENT -->
-  <div id="main-content">
-
-    <!-- CONTENT -->
-    <section id="content">
-
-    </section>
-
-  </div>
-
   <!-- Mixpanel -->
   <script type="text/javascript">
 
@@ -84,6 +73,13 @@
       var App= App || {} ;
 
       App.name = 'Famous Graphs';
+
+      App.credentials = {
+        firebase : {
+          url : 'https://incandescent-fire-2947.firebaseIO.com'
+        }
+      }
+
       App.tracking = false;
     </script>
 
