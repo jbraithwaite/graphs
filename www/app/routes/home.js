@@ -1,13 +1,14 @@
 define([
 
   // Models
+  "models/vote",
 
   // Views
   "views/global",
-  // "views/pages/home/home-index",
 
   // Collections
   "collections/global",
+  "collections/votes",
 
   // Core libraries
   "jquery",
@@ -27,13 +28,14 @@ define([
   ], function(
 
     // Models
+    Vote,
 
     // Views
     views,
-    // View,
 
     // Collections
     collections,
+    Votes,
 
     // Core libraries
     $,
@@ -62,11 +64,24 @@ define([
       // Remove previous view
       views.currentView.remove();
 
-      // Load current view
-      // views.currentView = new View();
+      // A Firebase collection. It's automatically kept in sync. No need to manually do fetches or sync.
+      var votes = new Votes();
 
-      // Render and display the current view
-      // views.contents.$el.html(views.currentView.render().$el);
+      // On the initial sync
+      votes.on('sync', function(collection){
+
+        // Oliver, this is where you would get your initial data from
+        console.log('Sync complete, here is the collection with data', collection);
+
+        // Now add the event on add to get future models
+        votes.on('add', function(model){
+
+          // DO NOT MANIPLATE THE MODEL, TREAT IT AS READ ONLY
+          // Oliver, you will most like do a model.get('vote')
+          console.log('Model Added:', model);
+        });
+      });
+
 
       var mainContext = Engine.createContext();
       mainContext.setPerspective(1000);

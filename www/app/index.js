@@ -14,6 +14,9 @@ require.config({
     "handlebars": "../bower/handlebars/handlebars",
     "underscore": "../bower/underscore/underscore",
 
+    // Realtime
+    "firebase" : "../bower/firebase/firebase-debug",
+    "backfire" : "../bower/backfire/backbone-firebase",
 
     // Other core
     "nprogress": "../bower/nprogress/nprogress",
@@ -31,41 +34,52 @@ require.config({
   //Sets the configuration for your third party scripts that are not AMD compatible
   shim: {
 
-      "underscore": {
-        "exports": '_'
+      underscore: {
+        exports: '_'
       },
 
-      "jquery": {
-        "exports": '$'
+      jquery: {
+        exports: '$'
       },
 
-      "nprogress": {
-        "exports": 'NProgress'
+      nprogress: {
+        exports: 'NProgress'
       },
 
-      "handlebars": {
-        "exports": 'Handlebars'
+      handlebars: {
+        exports: 'Handlebars'
       },
 
-      "bootstrap": {
+      bootstrap: {
 
-        "deps": [
+        deps: [
           "jquery"
         ]
       },
 
-      "facebook": {
-        "exports": 'FB'
+      facebook: {
+        exports: 'FB'
       },
 
-      "backbone": {
+      backbone: {
 
-        "deps": [
+        deps: [
           "underscore",
           "jquery"
         ],
 
-        "exports": "Backbone"
+        exports: "Backbone"
+      },
+
+      backfire: {
+
+        deps: [
+          "backbone",
+          "jquery",
+          "firebase"
+        ],
+
+        exports: "Backbone"
       }
   }
 
@@ -83,6 +97,8 @@ require(
     "mixins/sync",
     "mixins/backbone-view",
 
+    "backfire",
+
     "router"
   ],
   function(
@@ -94,6 +110,8 @@ require(
     m1,
     m2,
     m3,
+
+    backfire,
 
     Router
   ) {

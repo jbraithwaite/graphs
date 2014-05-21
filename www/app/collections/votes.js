@@ -1,10 +1,9 @@
 define([
 
   // Models
-  "models/stat",
+  "models/vote",
 
   // Collections
-  "collections/sails-collection",
 
   // Libraries
   "jquery",
@@ -17,7 +16,6 @@ define([
     Model,
 
     // Collections
-    SailsCollection,
 
     // Libraries
     $,
@@ -26,13 +24,11 @@ define([
 
   ) {
 
-    return SailsCollection.extend({
+    return Backbone.Firebase.Collection.extend({
 
       model: Model,
 
-      url: function(){
-        return '/api/testing';
-      }
+      firebase:  App.credentials.firebase.url + '/votes'
 
     });
 
