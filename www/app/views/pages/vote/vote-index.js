@@ -47,6 +47,12 @@ define([
       send : function(e){
         e.preventDefault();
 
+        $(e.target)
+          .data('oldValue', $(e.target).html())
+          .html('Please Wait...')
+          .prop('disabled', true)
+          .addClass('disabled');
+
         var form = {};
 
         form.handle = this.$('#form-handle').val();
@@ -56,6 +62,10 @@ define([
 
         if (!form.blog) {
           this.$('#form-blog-help').removeClass('hide');
+          $(e.target)
+            .html($(e.target).data('oldValue'))
+            .prop('disabled', false)
+            .removeClass('disabled');
           return;
         } else {
           this.$('#form-blog-help').addClass('hide');
@@ -81,6 +91,7 @@ define([
 
         votes.add(vote);
         console.log(vote);
+
 
       },
 

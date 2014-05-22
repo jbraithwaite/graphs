@@ -63,8 +63,8 @@ define([
     routes: {
 
       // Home
-      '': 'home',
-      'vote': 'vote',
+      '': 'vote',
+      'graph': 'home',
 
       '*path': 'show404'
     },
