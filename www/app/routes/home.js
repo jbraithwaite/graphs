@@ -58,6 +58,8 @@ define([
 
     return function (options){
 
+      var MULTIPLIER = 1;
+
       options = options || {};
 
       // Title
@@ -89,12 +91,11 @@ define([
           collection.sort();
 
 
-
           graphData.blogs = collections.blogs.map(function(blog){
-
             return {
-              index: blog.id,
-              value: collection.where({blog:blog.id}).length
+              index: blog.id - 1,
+              label: collections.blogs.findWhere({id: blog.id}).get('name'),
+              value: collection.where({blog:blog.id}).length * MULTIPLIER || 0.01
             };
 
           });
@@ -119,7 +120,9 @@ define([
           // DO NOT MANIPLATE THE MODEL, TREAT IT AS READ ONLY
           // Oliver, you will most like do a model.get('vote')
           console.log('Model Added:', model);
-
+          var val = collection.where({blog:model.get('blog')}).length;
+          console.log('val=', val);
+          eventHandler.emit("setItem", {index: model.get('blog') - 1, value: val * MULTIPLIER});
         });
       });
 
@@ -222,6 +225,10 @@ define([
 
         container.add(bargraph.start());
         window.bargraph = bargraph;
+      });
+
+      eventHandler.on("setItem", function (item) {
+        bargraph.setItemValue(item.index, item.value);
       });
 
       // zoom bargraph

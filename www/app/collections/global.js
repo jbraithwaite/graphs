@@ -10,7 +10,7 @@ define([
     var collections = {};
 
     collections.blogs = new Backbone.Collection([
-      { id: 2, name: '4chan' },
+      { id: 1, name: '4chan' },
       { id: 2, name: '9to5mac' },
       { id: 3, name: 'CNET' },
       { id: 4, name: 'Engadget' },

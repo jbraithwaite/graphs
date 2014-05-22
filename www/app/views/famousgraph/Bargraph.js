@@ -210,7 +210,7 @@ define(function(require, exports, module) {
         if ((index < 0) || (index > this.options.data.length -1)) return;
 
         var originalValue = this._originalBarValues[index];
-        this._barHeightRatio = (this.options.size[1] - this.options.axisWidth - (this.options.axisPadding * 2)) / this._maxBarHeight;
+        this._barHeightRatio = this.options.size[1] / this._maxBarHeight;
         var newValue = this.options.data[index].value = value; 
 
         if (value > this._maxBarHeight) {
@@ -264,6 +264,8 @@ define(function(require, exports, module) {
         // render each bar 
         var offset = this.options.axisWidth + this.options.axisPadding;
         var transform;
+        var LABEL_OFFSET = 20;
+        var y_label = LABEL_OFFSET;
         for (var i=0; i<this._bars.length; i++) {
             this._bars[i].offset = offset;
             if (this.options.direction === Bargraph.STYLE_COL) {
@@ -283,6 +285,26 @@ define(function(require, exports, module) {
                 result[result.length - 1].transform = Transform.scale(this._scaleBar[0].get(), this._scaleBar[1].get(), 1);
                 // result[result.length - 1].transform = Transform.scale(1, 1, 100);
             }
+
+            // add label
+            (y_label === LABEL_OFFSET) ? y_label = 5 : y_label = LABEL_OFFSET;
+            result.push({
+                origin: [0, 1],
+                transform: Transform.translate(offset, y_label, 1),
+                target: new Surface({
+                    content: this.options.data[i].label,
+                    size: [0, 0],
+                    properties: {
+                        backgroundColor: 'hotpink',
+                        color: this.options.barColor,
+                        fontSize: '12px',
+                        fontFamily: 'Myriad Pro',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                        zIndex: 100
+                    }
+                }).render()
+            });
 
             offset = offset + this._barWidth + this.options.gutterWidth;
         }
